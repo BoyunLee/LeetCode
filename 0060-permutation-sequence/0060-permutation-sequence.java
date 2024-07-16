@@ -1,28 +1,45 @@
 class Solution {
     public String getPermutation(int n, int k) {
         List<Integer> numbers = new ArrayList<>();
-        int[] factorial = new int[n + 1];
         StringBuilder result = new StringBuilder();
+        boolean[] used = new boolean[n+1];
 
-        // 숫자 리스트 생성
-        for(int i=1; i<=n; i++) {
+        int[] factorial = new int[n+1];
+        factorial[0] = 1;
+        for (int i=1; i<=n; i++) {
+            factorial[i] = factorial[i-1]*i;
+        }
+
+        for (int i=1; i<=n; i++) {
             numbers.add(i);
         }
 
-        // 팩토리얼 값 계산
-        factorial[0] = 1;
-        for (int i = 1; i <= n; i++) {
-            factorial[i] = factorial[i - 1] * i;
-        }
-
-        // 순열 생성
-        for (int i = 1; i <= n; i++) {
-            int index = (k - 1) / factorial[n - i];
-            result.append(numbers.get(index));
-            numbers.remove(index);
-            k -= index * factorial[n - i];
-        }
+        backtrack(n, k, used, numbers, factorial, result);
 
         return result.toString();
+    }
+
+    private void backtrack(int n, int k, boolean[] used, List<Integer> numbers, int[] factorial, StringBuilder result) {
+        if (result.length() == n) {
+            return;
+        }
+
+        int remaining = n - result.length() -1;
+
+        for (int i=1; i<=n; i++) {
+            if (used[i]) continue;
+
+            int count = factorial[remaining];
+
+            if (k > count) {
+                k -= count;
+            } else {
+                result.append(i);
+                used[i] = true;
+                backtrack(n, k, used, numbers, factorial, result);
+                return;
+            }
+        }
+
     }
 }
