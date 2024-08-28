@@ -1,33 +1,22 @@
 class Solution {
     public int coinChange(int[] coins, int amount) {
-        if (amount == 0) return 0;
-
-        Queue<Entry> queue = new ArrayDeque<>();
-        boolean[] visited = new boolean[amount + 1];
-        queue.add(new Entry(amount, 0));
-
-        while (!queue.isEmpty()) {
-            Entry cur = queue.remove();
-            for (int i = 0; i < coins.length; i++) {	
-                int nextAmount = cur.amount - coins[i];
-                if (nextAmount == 0) {
-                    return cur.count + 1;
-                } else if (nextAmount > 0 && !visited[nextAmount]) {
-                    queue.add(new Entry(nextAmount, cur.count + 1));
-                    visited[nextAmount] = true;
+        int max = 10001; 
+        int[] dp = new int[amount + 1];
+        
+        for (int i = 1; i <= amount; i++) {
+            dp[i] = max;
+        }
+        
+        dp[0] = 0; 
+        
+        for (int coin : coins) {
+            for (int currentAmount = coin; currentAmount <= amount; currentAmount++) {
+                if (dp[currentAmount - coin] != max) {
+                    dp[currentAmount] = Math.min(dp[currentAmount], dp[currentAmount - coin] + 1);
                 }
             }
         }
-        return -1;
-    }
-
-    static class Entry {
-        int amount;
-        int count;
-
-        public Entry(int amount, int count) {
-            this.amount = amount;
-            this.count = count;
-        }
+        
+        return dp[amount] == max ? -1 : dp[amount];
     }
 }
