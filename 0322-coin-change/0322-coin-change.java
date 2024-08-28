@@ -10,13 +10,12 @@ class Solution {
         dp[0] = 0; 
         
         for (int coin : coins) {
-            for (int currentAmount = coin; currentAmount <= amount; currentAmount++) {
+            for (int currentAmount=coin; currentAmount<=amount; currentAmount++) {
                 if (dp[currentAmount - coin] != max) {
                     dp[currentAmount] = Math.min(dp[currentAmount], dp[currentAmount - coin] + 1);
                 }
             }
         }
-        
         return dp[amount] == max ? -1 : dp[amount];
     }
 }
