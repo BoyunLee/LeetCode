@@ -1,53 +1,36 @@
-class Edge {
-    int node, cost;
-    public Edge (int node, int cost) {
-        this.node = node;
-        this.cost = cost;
-    }
-}
 class Solution {
     public int networkDelayTime(int[][] times, int n, int k) {
-        Map<Integer, List<Edge>> graph = new HashMap<>();
-        for(int i=0; i<=n; i++) {
-            graph.put(i, new ArrayList<>());
-        }
+        int[] cost = new int[n+1];
+        Arrays.fill(cost, Integer.MAX_VALUE);
+        cost[k] = 0;
 
-        for(int[] time : times) {
-            int u = time[0];
-            int v = time[1];
-            int w = time[2];
-            graph.get(u).add(new Edge(v, w));
-        }
+        for (int i = 0; i < n; i++) {
+            boolean update = false;
 
-        int Max = Integer.MAX_VALUE;
-        int[] costs = new int[n+1];
-        Arrays.fill(costs, Max);
+            for (int[] t : times) {
+                int src = t[0];
+                int dst = t[1];
+                int price = t[2];
 
-        Queue<Edge> queue = new ArrayDeque<>();
-        queue.add(new Edge(k, 0));
-        costs[k] = 0;
+                if (cost[src] == Integer.MAX_VALUE) {
+                    continue;
+                }
 
-        while(!queue.isEmpty()) {
-            Edge cur = queue.remove();
-            if(costs[cur.node] < cur.cost) {
-                continue;
-            }
-
-            for(Edge next : graph.get(cur.node)) {
-                int nextCost = costs[cur.node] + next.cost;
-                if(nextCost < costs[next.node]) {
-                    queue.add(new Edge(next.node, nextCost));
-                    costs[next.node] = nextCost;
+                if (cost[dst] > cost[src] + price) {
+                    cost[dst] = cost[src] + price;
+                    update = true;
                 }
             }
-        }
-        int maxTime = 0;
-        for(int i=1; i<=n; i++) {
-            if(costs[i] == Max) {
-                return -1;
+
+            if (update == false) {
+                break;
             }
-            maxTime = Math.max(maxTime, costs[i]);
         }
-        return maxTime;
+
+        int ans = -1;
+        for (int i = 1; i < n+1; i++) {
+            ans = Math.max(ans, cost[i]);
+        }
+        return ans == Integer.MAX_VALUE ? -1 : ans;
     }
 }
