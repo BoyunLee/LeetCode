@@ -1,36 +1,39 @@
+import java.util.*;
+
 class Solution {
     public int networkDelayTime(int[][] times, int n, int k) {
         int[] cost = new int[n+1];
-        Arrays.fill(cost, Integer.MAX_VALUE);
+        int max = Integer.MAX_VALUE;
+        Arrays.fill(cost, max);
         cost[k] = 0;
 
-        for (int i = 0; i < n; i++) {
-            boolean update = false;
+        for(int i=1; i<=n; i++) {
+            boolean check = false;
 
-            for (int[] t : times) {
-                int src = t[0];
-                int dst = t[1];
-                int price = t[2];
+            for(int[] time : times) {
+                int u = time[0];
+                int v = time[1];
+                int w = time[2];
 
-                if (cost[src] == Integer.MAX_VALUE) {
+                if(cost[u] == max) {
                     continue;
                 }
 
-                if (cost[dst] > cost[src] + price) {
-                    cost[dst] = cost[src] + price;
-                    update = true;
+                if(cost[v] > cost[u] + w) {
+                    cost[v] = cost[u] + w;
+                    check = true;
                 }
             }
-
-            if (update == false) {
+            if(!check) {
                 break;
             }
         }
 
-        int ans = -1;
-        for (int i = 1; i < n+1; i++) {
-            ans = Math.max(ans, cost[i]);
+        int answer = -1;
+        for(int i=1; i<=n; i++) {
+            answer = Math.max(answer, cost[i]);
         }
-        return ans == Integer.MAX_VALUE ? -1 : ans;
+
+        return answer == max ? -1 : answer;
     }
 }
