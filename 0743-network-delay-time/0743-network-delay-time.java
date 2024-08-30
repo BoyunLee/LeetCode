@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Solution {
     public int networkDelayTime(int[][] times, int n, int k) {
         int[] cost = new int[n+1];
@@ -7,7 +5,7 @@ class Solution {
         Arrays.fill(cost, max);
         cost[k] = 0;
 
-        for(int i=1; i<=n; i++) {
+        for(int i=0; i<n; i++) {
             boolean check = false;
 
             for(int[] time : times) {
@@ -24,9 +22,8 @@ class Solution {
                     check = true;
                 }
             }
-            if(!check) {
-                break;
-            }
+
+            if(!check) break;
         }
 
         int answer = -1;
